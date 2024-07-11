@@ -44,8 +44,9 @@ fetch(tokenUrl, requestOptions)
             })
             .then(response => response.json())
             .then(bandData => {
-                // Get the band's Spotify ID
+                // Get the band's Spotify ID and genres
                 const bandId = bandData.artists.items[0].id;
+                const bandGenres = bandData.artists.items[0].genres;
 
                 // Fetch the band's related artists using the access token
                 const relatedArtistsUrl = `https://api.spotify.com/v1/artists/${bandId}/related-artists`;
@@ -58,7 +59,33 @@ fetch(tokenUrl, requestOptions)
                 })
                 .then(response => response.json())
                 .then(relatedArtistsData => {
-                    console.log('Related Artists Data:', relatedArtistsData);
+                    // Filter related artists by matching genres
+                    let filteredRelatedArtists = relatedArtistsData.artists.filter(artist => {
+                        // Find the common genres
+                        const commonGenres = artist.genres.filter(genre => bandGenres.includes(genre));
+                        
+                        // Check if there are at least 2 common genres
+                        return commonGenres.length >= 2;
+                    });
+
+                    // If no artists match the 2-genre criteria, check for at least 1 common genre
+                    if (filteredRelatedArtists.length === 0) {
+                        filteredRelatedArtists = relatedArtistsData.artists.filter(artist => {
+                            // Find the common genres
+                            const commonGenres = artist.genres.filter(genre => bandGenres.includes(genre));
+                            
+                            // Check if there is at least 1 common genre
+                            return commonGenres.length >= 1;
+                        });
+                    }
+
+                    // If no artists match the genre criteria, log a message
+                    if (filteredRelatedArtists.length === 0) {
+                        console.log('No related artists with common genres found.');
+                    } else {
+                        // Log the filtered related artists
+                        console.log('Filtered Related Artists:', filteredRelatedArtists.map(artist => artist.name));
+                    }
                 })
                 .catch(error => console.error('Error fetching related artists data:', error));
             })
