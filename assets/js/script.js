@@ -85,6 +85,12 @@ fetch(tokenUrl, requestOptions)
                     } else {
                         // Log the filtered related artists
                         console.log('Filtered Related Artists:', filteredRelatedArtists.map(artist => artist.name));
+
+                        // Append the first 10 related artists to the specified div elements
+                        for (let i = 0; i < Math.min(10, filteredRelatedArtists.length); i++) {
+                            const artistDiv = document.getElementById(`result-${i+1}`);
+                            artistDiv.textContent = filteredRelatedArtists[i].name;
+                        }
                     }
                 })
                 .catch(error => console.error('Error fetching related artists data:', error));
