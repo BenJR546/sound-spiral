@@ -1,14 +1,21 @@
 body {
+    display: flex;
+    flex-direction: row;
     font-family: Arial, sans-serif;
+    font-size: 2.5vw;
 }
 
 .container {
-    width: 80%;
-    margin: 0 auto;
+    /* width: 80%; */
+     display: flex;
+    flex-direction: column;
+    /* margin: 0 auto; */
+    margin: 1rem;
 }
 
-h1 {
-    text-align: center;
+h1::after {
+    /* text-align: center; */
+    content: "🎷";
 }
 
 .results-table {
@@ -31,6 +38,7 @@ h1 {
     display: flex;
     flex-direction: column;
     align-items: center;
+    margin: 1rem;
 }
 #search-bands {
     border: 1px solid black;
@@ -83,4 +91,11 @@ h1 {
 #submit-btn:active {
     background-color: #70bebe;
     box-shadow: .05rem .05rem;
+}
+
+@media screen and (max-width: 680px) {
+    body {
+        display: flex;
+        flex-direction: column;
+    }    
 }
