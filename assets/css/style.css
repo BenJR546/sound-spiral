@@ -39,7 +39,7 @@ h1 {
     font-size: large;
 }
 #search-box:focus {
-    box-shadow: 0px 0px 1rem;
+    box-shadow: 0px 0px 25px;
 }
 #search-form {
     display: flex;
@@ -50,4 +50,13 @@ h1 {
     border: 1px solid black;
     font-size: large;
     font-weight: bold;
+}
+#submit-btn {
+    background-color: #fff;
+    border: 1px solid #000;
+    border-radius: .25rem;
+    background-color: #70bebe;
+}
+#submit-btn:hover {
+    cursor: pointer;
 }
