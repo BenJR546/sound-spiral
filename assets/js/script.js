@@ -1,3 +1,22 @@
+
+// added radio js
+const radioBtns = document.querySelectorAll('input[name="music"]');
+const submitBtn = document.querySelector('#submit-btn')
+const selection = "";
+
+const handleRadioInputs = (event) => {
+    event.preventDefault();
+    radioBtns.forEach(radioBtn => {
+        if (radioBtn.checked) {
+            console.log(radioBtn.value);
+            // return radioBtn.value;
+        }
+    })
+}
+
+submitBtn.addEventListener('click', handleRadioInputs)
+//end of the radio selection
+
 // Replace 'YOUR_CLIENT_ID' and 'YOUR_CLIENT_SECRET' with your actual Client ID and Client Secret
 const CLIENT_ID = '0c8075639deb423fb168d3128753a4f7';
 const CLIENT_SECRET = '49239f31e67d4dea9e7242036b02e8fe';
