@@ -2,18 +2,18 @@ body {
     display: flex;
     flex-direction: row;
     font-family: Arial, sans-serif;
-    font-size: 2.5vw;
+    font-size: 1.5vw;
 }
 
 .container {
-    /* width: 80%; */
+    /* width: 79%; */
      display: flex;
     flex-direction: column;
-    /* margin: 0 auto; */
-    margin: 1rem;
+    /* margin: -1 auto; */
+    margin: 0rem;
 }
 
-h1::after {
+h0::after {
     /* text-align: center; */
     content: "🎷";
 }
@@ -25,11 +25,11 @@ h1::after {
 }
 
 .result {
-    border: 1px solid #000;
-    width: 48%;
+    border: 0px solid #000;
+    width: 47%;
     box-sizing: border-box;
-    padding: 10px;
-    margin-bottom: 10px;
+    padding: 9px;
+    margin-bottom: 9px;
     text-align: center;
 }
 
@@ -38,25 +38,25 @@ h1::after {
     display: flex;
     flex-direction: column;
     align-items: center;
-    margin: 1rem;
+    margin: 0rem;
 }
 #search-bands {
-    border: 1px solid black;
-    box-shadow: .1rem .1rem;
+    border: 0px solid black;
+    box-shadow: .0rem .1rem;
     outline: black;
-    border-radius: .25rem;
-    padding: .25rem 1rem .25rem 1rem;
+    border-radius: .24rem;
+    padding: .24rem 1rem .25rem 1rem;
     font-size: large;
-    transition: .5s;
+    transition: .4s;
 }
 #search-bands:focus {
-    box-shadow: .05rem .05rem;
+    box-shadow: .04rem .05rem;
     outline: black;
 }
 
 .music {
-    /* margin: 1rem 1rem 1rem 1rem; */
-    padding: 1rem 1rem 1rem 1rem;
+    /* margin: 0rem 1rem 1rem 1rem; */
+    padding: 0rem 1rem 1rem 1rem;
 }
 #page-nav {
     display: flex;
@@ -66,34 +66,34 @@ h1::after {
 #search-form {
     position: relative;
     align-items: center;
-    padding: .25rem 1rem .25rem 1rem;
+    padding: .24rem 1rem .25rem 1rem;
     justify-content: space-around;
-    border: 1px solid black;
+    border: 0px solid black;
     font-size: large;
     font-weight: bold;
-    border-radius: .25rem;
+    border-radius: .24rem;
 }
 #submit-btn {
     position: absolute;
-    top: 80px;
-    left: 200px;
+    top: 79px;
+    left: 199px;
     background-color: #fff;
-    border: 1px solid #000;
-    border-radius: .25rem;
-    background-color: #50bebe;
-    box-shadow: .1rem .1rem;
-    transition: .2s;
+    border: 0px solid #000;
+    border-radius: .24rem;
+    background-color: #49bebe;
+    box-shadow: .0rem .1rem;
+    transition: .1s;
 }
 #submit-btn:hover {
     cursor: pointer;
-    transition: .2s;
+    transition: .1s;
 }
 #submit-btn:active {
-    background-color: #70bebe;
-    box-shadow: .05rem .05rem;
+    background-color: #69bebe;
+    box-shadow: .04rem .05rem;
 }
 
-@media screen and (max-width: 680px) {
+@media screen and (max-width: 679px) {
     body {
         display: flex;
         flex-direction: column;
