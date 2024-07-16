@@ -1,81 +1,171 @@
-
 // added radio js
 const radioBtns = document.querySelectorAll('input[name="music"]');
-const submitBtn = document.querySelector('#submit-btn')
+const searchBands = document.querySelector("#search-bands");
+const submitBtn = document.querySelector("#submit-btn");
+const resultsTable = document.querySelector(".results-table");
+
 let selection = "";
 // get user input from search bar.
 let searchInput = "";
 
 //artist query
-const artistQuery = () => {
+const Query = selection => {
+  // Replace 'YOUR_CLIENT_ID' and 'YOUR_CLIENT_SECRET' with your actual Client ID and Client Secret
+  const CLIENT_ID = "0c8075639deb423fb168d3128753a4f7";
+  const CLIENT_SECRET = "49239f31e67d4dea9e7242036b02e8fe";
 
-    // Replace 'YOUR_CLIENT_ID' and 'YOUR_CLIENT_SECRET' with your actual Client ID and Client Secret
-    const CLIENT_ID = '0c8075639deb423fb168d3128753a4f7';
-    const CLIENT_SECRET = '49239f31e67d4dea9e7242036b02e8fe';
+  // Base64 encode the client ID and secret
+  const encodedCredentials = btoa(CLIENT_ID + ":" + CLIENT_SECRET);
 
-    // Base64 encode the client ID and secret
-    const encodedCredentials = btoa(CLIENT_ID + ':' + CLIENT_SECRET);
+  // Define the API endpoint for token
+  const tokenUrl = "https://accounts.spotify.com/api/token";
 
-    // Define the API endpoint for token
-    const tokenUrl = 'https://accounts.spotify.com/api/token';
+  // Define the request options for token
+  const requestOptions = {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/x-www-form-urlencoded",
+      Authorization: "Basic " + encodedCredentials
+    },
+    body: "grant_type=client_credentials"
+  };
 
-    // Define the request options for token
-    const requestOptions = {
-        method: 'POST',
-        headers: { 
-            'Content-Type': 'application/x-www-form-urlencoded', 
-            'Authorization': 'Basic ' + encodedCredentials 
-        },
-        body: 'grant_type=client_credentials'
-    };
+  // Function to get the access token
+  fetch(tokenUrl, requestOptions)
+    .then(response => response.json())
+    .then(data => {
+      const accessToken = data.access_token;
+      // console.log('Access Token:', accessToken);
 
-    // Function to get the access token
-    fetch(tokenUrl, requestOptions)
+      // if (searchBands.value === localStorage.getItem('searchValue')) {
+      //     alert("please enter different search content!")
+      //     return 0;
+      // }
+
+      if (searchBands.value) {
+        searchInput = searchBands.value;
+        localStorage.setItem("searchValue", searchBands.value);
+      } else {
+        alert("please enter content to search!");
+        return 0;
+      }
+
+      const URL = `https://api.spotify.com/v1/search?q=${encodeURIComponent(
+        searchInput
+      )}&type=${selection}&limit=5`;
+
+      fetch(URL, {
+        method: "GET",
+        headers: {
+          Authorization: "Bearer " + accessToken
+        }
+      })
         .then(response => response.json())
-        .then(data => {
-            const accessToken = data.access_token;
-            // console.log('Access Token:', accessToken);
-            const searchBands = document.querySelector('#search-bands');
-            searchInput= searchBands.value;
-            
-            const artistURL = `https://api.spotify.com/v1/search?q=${encodeURIComponent(searchInput)}&type=${selection}&limit=5`;
-
-                fetch(artistURL, {
-                    method: 'GET',
-                    headers: {
-                        'Authorization': 'Bearer ' + accessToken
-                    }
-                })
-                .then(response => response.json())
-                .then(artistData => {
-                    console.log(artistData);
-                })
-            })
-        }
-
-const handleRadioInputs = (event) => {
-    event.preventDefault();
-    radioBtns.forEach(radioBtn => {
-        if (radioBtn.checked) {
-            // console.log(radioBtn.value);
-            // return radioBtn.value;
-            selection = radioBtn.value;
-            //function here;
-
-            // Fetch the band's information using the access token
-            if (selection === "artist") {
-                artistQuery();
+        .then(Data => {
+          if (selection === "artist") {
+            // resultsTable.innerHTML = JSON.parse(localStorage.getItem('recent-input'));
+            resultsTable.innerHTML = "";
+            const artistItems = Data.artists.items;
+            const storeArtistName = [];
+            const storeArtistHREF = [];
+            const artistTable = document.createElement("div");
+            artistTable.innerHTML += `<h3 class="text-lg font-bold">Artists: </h3>`;
+            artistTable.classList = "flex flex-wrap justify-between";
+            for (const artistItem of artistItems) {
+              storeArtistName.push(artistItem.name);
+              storeArtistHREF.push(artistItem.external_urls.spotify);
             }
-        }
-    })
-}
+            localStorage.setItem(
+              "artist-names",
+              JSON.stringify(storeArtistName)
+            );
+            localStorage.setItem(
+              "artist-hrefs",
+              JSON.stringify(storeArtistHREF)
+            );
+            let historicalArtistNames = JSON.parse(
+              localStorage.getItem("artist-names")
+            );
+            let historicalArtistHREFs = JSON.parse(
+              localStorage.getItem("artist-hrefs")
+            );
+            for (let i = 0; i < historicalArtistNames.length; i++) {
+              // console.log(historicalArtistNames[i]);
+              // console.log(historicalArtistHREFs[i]);
+              let artistLink = document.createElement("a");
+              artistLink.classList =
+                "group cursor-auto result border-2 border-blue-200 w-[50%] p-2 mb-2 text-center shadow-md rounded-md hover:cursor-pointer hover:bg-blue-200 hover:text-white transition duration-200";
+              artistLink.textContent = historicalArtistNames[i];
+              artistLink.href = historicalArtistHREFs[i];
+              artistLink.target = '_blank';
+              artistTable.appendChild(artistLink);
+            }
+            resultsTable.appendChild(artistTable);
+            localStorage.setItem(
+              "recent-input",
+              JSON.stringify(resultsTable.innerHTML)
+            );
+          }
+          else if (selection === "track") {
+              resultsTable.innerHTML = "";
+              const trackItems = Data.tracks.items;
+              const storeTrackName = [];
+              const storeTrackHREFs = [];
+              const trackTable = document.createElement('div')
+              trackTable.innerHTML += `<h3 class="text-lg font-bold">Songs: </h3>`;
+              trackTable.classList = "flex flex-wrap justify-between";
+              for (const trackItem of trackItems) {
+                  storeTrackName.push(trackItem.name);
+                  storeTrackHREFs.push(trackItem.external_urls.spotify);
+              }
+              localStorage.setItem("track-names", JSON.stringify(storeTrackName));
+              localStorage.setItem("track-hrefs", JSON.stringify(storeTrackHREFs));
+              let historicalTrackNames = JSON.parse(localStorage.getItem("track-names"));
+              let historicalTrackHREFs = JSON.parse(localStorage.getItem("track-hrefs"));
+              for (let i = 0; i < historicalTrackNames.length; i++) {
+                // console.log(historicalTrackNames[i]);
+                // console.log(historicalTrackHREFs[i]);
+                let trackLink = document.createElement("a");
+                trackLink.classList =
+                  "group cursor-auto result border-2 border-blue-200 w-[50%] p-2 mb-2 text-center shadow-md rounded-md hover:cursor-pointer hover:bg-blue-200 hover:text-white transition duration-200";
+                trackLink.textContent = historicalTrackNames[i];
+                trackLink.href = historicalTrackHREFs[i];
+                trackLink.target = '_blank';
+                trackTable.appendChild(trackLink);
+              }
+              resultsTable.appendChild(trackTable);
+            localStorage.setItem(
+              "recent-input",
+              JSON.stringify(resultsTable.innerHTML)
+            );
+          }
+        });
+    });
+};
 
-submitBtn.addEventListener('click', handleRadioInputs)
+const handleRadioInputs = event => {
+  event.preventDefault();
+  radioBtns.forEach(radioBtn => {
+    if (radioBtn.checked) {
+      // console.log(radioBtn.value);
+      // return radioBtn.value;
+      selection = radioBtn.value;
+      //function here;
+      // console.log(selection);
+      // Fetch the band's information using the access token
+      Query(selection);
+    }
+  });
+};
+
+window.onload = () => {
+    searchBands.value = localStorage.getItem('searchValue');
+    resultsTable.innerHTML = JSON.parse(
+        localStorage.getItem("recent-input")
+    );
+};
+submitBtn.addEventListener("click", handleRadioInputs);
 //end of the radio selection
-
-
-
-
 
 // // Replace 'YOUR_CLIENT_ID' and 'YOUR_CLIENT_SECRET' with your actual Client ID and Client Secret
 // const CLIENT_ID = '0c8075639deb423fb168d3128753a4f7';
@@ -90,9 +180,9 @@ submitBtn.addEventListener('click', handleRadioInputs)
 // // Define the request options for token
 // const requestOptions = {
 //     method: 'POST',
-//     headers: { 
-//         'Content-Type': 'application/x-www-form-urlencoded', 
-//         'Authorization': 'Basic ' + encodedCredentials 
+//     headers: {
+//         'Content-Type': 'application/x-www-form-urlencoded',
+//         'Authorization': 'Basic ' + encodedCredentials
 //     },
 //     body: 'grant_type=client_credentials'
 // };
@@ -142,7 +232,7 @@ submitBtn.addEventListener('click', handleRadioInputs)
 //                     let filteredRelatedArtists = relatedArtistsData.artists.filter(artist => {
 //                         // Find the common genres
 //                         const commonGenres = artist.genres.filter(genre => bandGenres.includes(genre));
-                        
+
 //                         // Check if there are at least 2 common genres
 //                         return commonGenres.length >= 2;
 //                     });
@@ -152,7 +242,7 @@ submitBtn.addEventListener('click', handleRadioInputs)
 //                         filteredRelatedArtists = relatedArtistsData.artists.filter(artist => {
 //                             // Find the common genres
 //                             const commonGenres = artist.genres.filter(genre => bandGenres.includes(genre));
-                            
+
 //                             // Check if there is at least 1 common genre
 //                             return commonGenres.length >= 1;
 //                         });
