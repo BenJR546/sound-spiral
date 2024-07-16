@@ -52,7 +52,7 @@ const Query = selection => {
 
       const URL = `https://api.spotify.com/v1/search?q=${encodeURIComponent(
         searchInput
-      )}&type=${selection}&limit=5`;
+      )}&type=${selection}&limit=20`;
 
       fetch(URL, {
         method: "GET",
@@ -66,14 +66,18 @@ const Query = selection => {
             // resultsTable.innerHTML = JSON.parse(localStorage.getItem('recent-input'));
             resultsTable.innerHTML = "";
             const artistItems = Data.artists.items;
+            // console.log(artistItems);
             const storeArtistName = [];
             const storeArtistHREF = [];
+            const storeArtistImg = [];
             const artistTable = document.createElement("div");
             artistTable.innerHTML += `<h3 class="text-lg font-bold">Artists: </h3>`;
             artistTable.classList = "flex flex-wrap justify-between";
             for (const artistItem of artistItems) {
+              // console.log(artistItem);
               storeArtistName.push(artistItem.name);
               storeArtistHREF.push(artistItem.external_urls.spotify);
+              storeArtistImg.push(artistItem.images[1].url);
             }
             localStorage.setItem(
               "artist-names",
@@ -83,21 +87,31 @@ const Query = selection => {
               "artist-hrefs",
               JSON.stringify(storeArtistHREF)
             );
+            localStorage.setItem("artist-imgs", JSON.stringify(storeArtistImg));
             let historicalArtistNames = JSON.parse(
               localStorage.getItem("artist-names")
             );
             let historicalArtistHREFs = JSON.parse(
               localStorage.getItem("artist-hrefs")
             );
+            let historicalArtistImgs = JSON.parse(
+              localStorage.getItem("artist-imgs")
+            );
             for (let i = 0; i < historicalArtistNames.length; i++) {
               // console.log(historicalArtistNames[i]);
               // console.log(historicalArtistHREFs[i]);
+              let artistDiv = document.createElement("div");
+              let artistIMG = document.createElement("img");
               let artistLink = document.createElement("a");
               artistLink.classList =
-                "group cursor-auto result border-2 border-blue-200 w-[50%] p-2 mb-2 text-center shadow-md rounded-md hover:cursor-pointer hover:bg-blue-200 hover:text-white transition duration-200";
+                "group cursor-auto result border-2 border-blue-200 w-[50%] p-2 mb-2 text-center shadow-md rounded-md hover:cursor-pointer hover:bg-blue-200 hover:text-white transition duration-200 font-bold";
               artistLink.textContent = historicalArtistNames[i];
               artistLink.href = historicalArtistHREFs[i];
-              artistLink.target = '_blank';
+              artistLink.target = "_blank";
+              artistDiv.classList = "flex justify-center items-center";
+              artistIMG.src = historicalArtistImgs[i];
+              artistDiv.appendChild(artistIMG);
+              artistLink.appendChild(artistDiv);
               artistTable.appendChild(artistLink);
             }
             resultsTable.appendChild(artistTable);
@@ -105,35 +119,54 @@ const Query = selection => {
               "recent-input",
               JSON.stringify(resultsTable.innerHTML)
             );
-          }
-          else if (selection === "track") {
-              resultsTable.innerHTML = "";
-              const trackItems = Data.tracks.items;
-              const storeTrackName = [];
-              const storeTrackHREFs = [];
-              const trackTable = document.createElement('div')
-              trackTable.innerHTML += `<h3 class="text-lg font-bold">Songs: </h3>`;
-              trackTable.classList = "flex flex-wrap justify-between";
-              for (const trackItem of trackItems) {
-                  storeTrackName.push(trackItem.name);
-                  storeTrackHREFs.push(trackItem.external_urls.spotify);
-              }
-              localStorage.setItem("track-names", JSON.stringify(storeTrackName));
-              localStorage.setItem("track-hrefs", JSON.stringify(storeTrackHREFs));
-              let historicalTrackNames = JSON.parse(localStorage.getItem("track-names"));
-              let historicalTrackHREFs = JSON.parse(localStorage.getItem("track-hrefs"));
-              for (let i = 0; i < historicalTrackNames.length; i++) {
-                // console.log(historicalTrackNames[i]);
-                // console.log(historicalTrackHREFs[i]);
-                let trackLink = document.createElement("a");
-                trackLink.classList =
-                  "group cursor-auto result border-2 border-blue-200 w-[50%] p-2 mb-2 text-center shadow-md rounded-md hover:cursor-pointer hover:bg-blue-200 hover:text-white transition duration-200";
-                trackLink.textContent = historicalTrackNames[i];
-                trackLink.href = historicalTrackHREFs[i];
-                trackLink.target = '_blank';
-                trackTable.appendChild(trackLink);
-              }
-              resultsTable.appendChild(trackTable);
+          } else if (selection === "track") {
+            resultsTable.innerHTML = "";
+            const trackItems = Data.tracks.items;
+            const storeTrackName = [];
+            const storeTrackHREFs = [];
+            const storeTrackImg = [];
+            const trackTable = document.createElement("div");
+            trackTable.innerHTML += `<h3 class="text-lg font-bold">Songs: </h3>`;
+            trackTable.classList = "flex flex-wrap justify-between";
+            for (const trackItem of trackItems) {
+              // console.log(trackItem.album.images[1].url);
+              storeTrackName.push(trackItem.name);
+              storeTrackHREFs.push(trackItem.external_urls.spotify);
+              storeTrackImg.push(trackItem.album.images[1].url);
+            }
+            localStorage.setItem("track-names", JSON.stringify(storeTrackName));
+            localStorage.setItem(
+              "track-hrefs",
+              JSON.stringify(storeTrackHREFs)
+            );
+            localStorage.setItem("track-imgs", JSON.stringify(storeTrackImg));
+            let historicalTrackNames = JSON.parse(
+              localStorage.getItem("track-names")
+            );
+            let historicalTrackHREFs = JSON.parse(
+              localStorage.getItem("track-hrefs")
+            );
+            let historicalTrackImgs = JSON.parse(
+              localStorage.getItem("track-imgs")
+            );
+            for (let i = 0; i < historicalTrackNames.length; i++) {
+              // console.log(historicalTrackNames[i]);
+              // console.log(historicalTrackHREFs[i]);
+              let trackDiv = document.createElement("div");
+              let trackIMG = document.createElement("img");
+              let trackLink = document.createElement("a");
+              trackLink.classList =
+                "group cursor-auto result border-2 border-blue-200 w-[50%] p-2 mb-2 text-center shadow-md rounded-md hover:cursor-pointer hover:bg-blue-200 hover:text-white transition duration-200 font-bold";
+              trackLink.textContent = historicalTrackNames[i];
+              trackLink.href = historicalTrackHREFs[i];
+              trackLink.target = "_blank";
+              trackDiv.classList = "flex justify-center items-center font-bold";
+              trackIMG.src = historicalTrackImgs[i];
+              trackDiv.appendChild(trackIMG);
+              trackLink.appendChild(trackDiv);
+              trackTable.appendChild(trackLink);
+            }
+            resultsTable.appendChild(trackTable);
             localStorage.setItem(
               "recent-input",
               JSON.stringify(resultsTable.innerHTML)
@@ -159,10 +192,8 @@ const handleRadioInputs = event => {
 };
 
 window.onload = () => {
-    searchBands.value = localStorage.getItem('searchValue');
-    resultsTable.innerHTML = JSON.parse(
-        localStorage.getItem("recent-input")
-    );
+  searchBands.value = localStorage.getItem("searchValue");
+  resultsTable.innerHTML = JSON.parse(localStorage.getItem("recent-input"));
 };
 submitBtn.addEventListener("click", handleRadioInputs);
 //end of the radio selection
