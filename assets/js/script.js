@@ -74,11 +74,16 @@ const Query = selection => {
             artistTable.innerHTML += `<h3 class="text-lg font-bold">Artists: </h3>`;
             artistTable.classList = "flex flex-wrap justify-between";
             for (const artistItem of artistItems) {
-              console.log(artistItem.images[1].url);
+              // console.log(artistItem.images[1].url);
               storeArtistName.push(artistItem.name);
               storeArtistHREF.push(artistItem.external_urls.spotify);
-              storeArtistImg.push(artistItem.images[1].url);
+              if (artistItem.images.length !== 0) {
+                storeArtistImg.push(artistItem.images[1].url);
+              } else {
+                storeArtistImg.push("/assets/img/placeholder-img.svg")
+              }
             }
+            console.log(storeArtistImg);
             localStorage.setItem(
               "artist-names",
               JSON.stringify(storeArtistName)
@@ -99,7 +104,7 @@ const Query = selection => {
             );
             for (let i = 0; i < historicalArtistNames.length; i++) {
               // console.log(historicalArtistNames[i]);
-              // console.log(historicalArtistHREFs[i]);
+              console.log(historicalArtistHREFs[i]);
               let artistDiv = document.createElement("div");
               let artistIMG = document.createElement("img");
               let artistLink = document.createElement("a");
@@ -160,7 +165,7 @@ const Query = selection => {
               let trackIMG = document.createElement("img");
               let trackLink = document.createElement("a");
               trackLink.classList =
-                "group cursor-auto result border-2 border-blue-200 w-[50%] p-2 mb-2 text-center shadow-md rounded-md hover:cursor-pointer hover:bg-blue-200 hover:text-white transition duration-200 font-bold";
+                "cursor-auto result border-2 border-blue-200 w-[50%] p-2 mb-2 text-center shadow-md rounded-md hover:cursor-pointer hover:bg-blue-200 hover:text-white transition duration-200 font-bold";
               trackLink.textContent = historicalTrackNames[i];
               trackLink.href = historicalTrackHREFs[i];
               trackLink.target = "_blank";
@@ -195,10 +200,10 @@ const handleRadioInputs = event => {
   });
 };
 
-window.onload = () => {
-  searchBands.value = localStorage.getItem("searchValue");
-  resultsTable.innerHTML = JSON.parse(localStorage.getItem("recent-input"));
-};
+// window.onload = () => {
+//   searchBands.value = localStorage.getItem("searchValue");
+//   resultsTable.innerHTML = JSON.parse(localStorage.getItem("recent-input"));
+// };
 submitBtn.addEventListener("click", handleRadioInputs);
 //end of the radio selection
 
