@@ -74,7 +74,7 @@ const Query = selection => {
             artistTable.innerHTML += `<h3 class="text-lg font-bold">Artists: </h3>`;
             artistTable.classList = "flex flex-wrap justify-between";
             for (const artistItem of artistItems) {
-              // console.log(artistItem);
+              console.log(artistItem.images[1].url);
               storeArtistName.push(artistItem.name);
               storeArtistHREF.push(artistItem.external_urls.spotify);
               storeArtistImg.push(artistItem.images[1].url);
@@ -103,14 +103,18 @@ const Query = selection => {
               let artistDiv = document.createElement("div");
               let artistIMG = document.createElement("img");
               let artistLink = document.createElement("a");
+              let artistButton = document.createElement("button");
+              artistButton.classList = "border-2 border-slate-400 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded";
+              artistButton.textContent = historicalArtistNames[i];
               artistLink.classList =
                 "group cursor-auto result border-2 border-blue-200 w-[50%] p-2 mb-2 text-center shadow-md rounded-md hover:cursor-pointer hover:bg-blue-200 hover:text-white transition duration-200 font-bold";
               artistLink.textContent = historicalArtistNames[i];
               artistLink.href = historicalArtistHREFs[i];
               artistLink.target = "_blank";
-              artistDiv.classList = "flex justify-center items-center";
+              artistDiv.classList = "flex flex-wrap justify-center items-center";
               artistIMG.src = historicalArtistImgs[i];
               artistDiv.appendChild(artistIMG);
+              artistDiv.appendChild(artistButton);
               artistLink.appendChild(artistDiv);
               artistTable.appendChild(artistLink);
             }
