@@ -63,8 +63,8 @@ const Query = selection => {
         .then(response => response.json())
         .then(Data => {
           if (selection === "artist") {
+            resultsTable.innerHTML = `` ;
             // resultsTable.innerHTML = JSON.parse(localStorage.getItem('recent-input'));
-            resultsTable.innerHTML = "";
             const artistItems = Data.artists.items;
             // console.log(artistItems);
             const storeArtistName = [];
@@ -106,23 +106,33 @@ const Query = selection => {
               // console.log(historicalArtistNames[i]);
               // console.log(historicalArtistHREFs[i]);
               let artistDiv = document.createElement("div");
+              let artistSecondaryDiv = document.createElement("div");
               let artistIMG = document.createElement("img");
               let artistLink = document.createElement("a");
               let artistButton = document.createElement("button");
+              artistIMG.classList = "w-[190px] h-[190px] m-5 rounded-md"
               artistButton.classList = "w-[50%] border-2 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-md transition duration-200";
               artistButton.textContent = `${historicalArtistNames[i]} YouTube`;
-              
+              artistButton.addEventListener('click', function() {
+                const youtubeSearchUrl = `https://www.youtube.com/results?search_query=${encodeURIComponent(historicalArtistNames[i])}`;
+                window.open(youtubeSearchUrl, '_blank');
+              });
               artistLink.classList =
                 "cursor-auto result border-2 border-slate-400 w-[50%] p-2 mb-2 text-center shadow-md rounded-md hover:cursor-pointer hover:bg-slate-200 hover:text-white transition duration-200 font-bold";
               artistDiv.classList =
                 "flex flex-col justify-center items-center cursor-auto result border-2 border-blue-400 w-[50%] p-2 mb-2 text-center shadow-md rounded-md";
+              if (historicalArtistImgs[i] === "../assets/img/placeholder-img.svg") {
+                artistDiv.classList.add('opacity-50','pointer-events-none');
+              }
+              artistSecondaryDiv.classList = "flex flex-row items-center justify-around";
               artistLink.textContent = `${historicalArtistNames[i]} Spotify`;
               artistLink.href = historicalArtistHREFs[i];
               artistLink.target = "_blank";
               artistIMG.src = historicalArtistImgs[i];
               artistDiv.appendChild(artistIMG);
-              artistDiv.appendChild(artistButton);
-              artistDiv.appendChild(artistLink);
+              artistSecondaryDiv.appendChild(artistButton);
+              artistSecondaryDiv.appendChild(artistLink);
+              artistDiv.appendChild(artistSecondaryDiv);
               artistTable.appendChild(artistDiv);
             }
             resultsTable.appendChild(artistTable);
@@ -139,11 +149,11 @@ const Query = selection => {
             const trackTable = document.createElement("div");
             trackTable.innerHTML += `<h3 class="text-lg font-bold">Songs: </h3>`;
             trackTable.classList = "flex flex-wrap justify-between";
+            // trackTable.classList = "flex flex-wrap"
             for (const trackItem of trackItems) {
               // console.log(trackItem.album.images[1].url);
               storeTrackName.push(trackItem.name);
               storeTrackHREFs.push(trackItem.external_urls.spotify);
-              storeTrackImg.push(trackItem.album.images[1].url);
               if (trackItem.album.images.length !== 0) {
                 storeTrackImg.push(trackItem.album.images[1].url);
               } else {
@@ -166,23 +176,35 @@ const Query = selection => {
               localStorage.getItem("track-imgs")
             );
             for (let i = 0; i < historicalTrackNames.length; i++) {
+              // console.log(historicalTrackImgs[i]);
               // console.log(historicalTrackNames[i]);
               // console.log(historicalTrackHREFs[i]);
               let trackDiv = document.createElement("div");
+              let trackSecondaryDiv = document.createElement("div");
               let trackIMG = document.createElement("img");
               let trackLink = document.createElement("a");
               let trackButton = document.createElement("button");
+              trackIMG.classList = "w-[190px] h-[190px] m-5 rounded-md"
               trackButton.classList = "w-[50%] border-2 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-md transition duration-200";
               trackButton.textContent = `${historicalTrackNames[i]} YouTube`;
-              trackDiv.classList = "flex flex-col justify-center items-center cursor-auto result border-2 border-blue-400 w-[50%] p-2 mb-2 text-center shadow-md rounded-md"
-              trackLink.classList = "cursor-auto result border-2 border-slate-400 w-[50%] p-2 mb-2 text-center shadow-md rounded-md hover:cursor-pointer hover:bg-slate-200 hover:text-white transition duration-200 font-bold"
+              trackButton.addEventListener('click', function() {
+                const youtubeSearchUrl = `https://www.youtube.com/results?search_query=${encodeURIComponent(historicalTrackNames[i])}`;
+                window.open(youtubeSearchUrl, '_blank');
+              });
+              trackDiv.classList = "flex flex-col justify-center items-center cursor-auto result border-2 border-blue-400 w-[50%] p-2 mb-2 text-center shadow-md rounded-md";
+              trackSecondaryDiv.classList = "flex flex-row items-center justify-around";
+              if (historicalTrackImgs[i] === "../assets/img/placeholder-img.svg") {
+                artistDiv.classList.add('opacity-50','pointer-events-none');
+              }
+              trackLink.classList = "cursor-auto result border-2 border-slate-400 w-[50%] p-2 mb-2 ml-2 text-center shadow-md rounded-md hover:cursor-pointer hover:bg-slate-200 hover:text-white transition duration-200 font-bold";
               trackLink.textContent = `${historicalTrackNames[i]} Spotify`;
               trackLink.href = historicalTrackHREFs[i];
               trackLink.target = "_blank";
               trackIMG.src = historicalTrackImgs[i];
               trackDiv.appendChild(trackIMG);
-              trackDiv.appendChild(trackButton);
-              trackDiv.appendChild(trackLink);
+              trackSecondaryDiv.appendChild(trackButton);
+              trackSecondaryDiv.appendChild(trackLink);
+              trackDiv.appendChild(trackSecondaryDiv);
               trackTable.appendChild(trackDiv);
             }
             resultsTable.appendChild(trackTable);
@@ -210,10 +232,11 @@ const handleRadioInputs = event => {
   });
 };
 
-// window.onload = () => {
-//   searchBands.value = localStorage.getItem("searchValue");
-//   resultsTable.innerHTML = JSON.parse(localStorage.getItem("recent-input"));
-// };
+window.onload = () => {
+  resultsTable.innerHTML = `<p class="text-slate-500 italic">Please search for results and select desired type.</p>` ;
+  // searchBands.value = localStorage.getItem("searchValue");
+  // resultsTable.innerHTML = JSON.parse(localStorage.getItem("recent-input"));
+};
 submitBtn.addEventListener("click", handleRadioInputs);
 //end of the radio selection
 
