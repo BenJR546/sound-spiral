@@ -34,6 +34,7 @@ const Query = selection => {
   fetch(tokenUrl, requestOptions)
     .then(response => response.json())
     .then(data => {
+      console.log(data);
       const accessToken = data.access_token;
       // console.log('Access Token:', accessToken);
 
@@ -41,7 +42,7 @@ const Query = selection => {
       //     alert("please enter different search content!")
       //     return 0;
       // }
-      if (searchBands.value) {
+      if (searchBands.value ) {
         searchInput = searchBands.value;
         localStorage.setItem("searchValue", searchBands.value);
       } else {
@@ -93,6 +94,7 @@ const Query = selection => {
       })
         .then(response => response.json())
         .then(Data => {
+          // console.log(Data);
           if (selection === "artist") {
             resultsTable.innerHTML = `` ;
             // resultsTable.innerHTML = JSON.parse(localStorage.getItem('recent-input'));
@@ -106,6 +108,7 @@ const Query = selection => {
             artistTable.classList = "flex flex-wrap justify-between";
             for (const artistItem of artistItems) {
               // console.log(artistItem.images[1].url);
+              console.log(artistItem);
               storeArtistName.push(artistItem.name);
               storeArtistHREF.push(artistItem.external_urls.spotify);
               if (artistItem.images.length !== 0) {
@@ -152,6 +155,7 @@ const Query = selection => {
                 "cursor-auto result border-2 border-slate-400 w-[50%] p-2 mb-2 text-center shadow-md rounded-md hover:cursor-pointer hover:bg-slate-200 hover:text-white transition duration-200 font-bold";
               artistDiv.classList =
                 "flex flex-col justify-center items-center cursor-auto result border-2 border-blue-400 w-[50%] p-2 mb-2 text-center shadow-md rounded-md";
+              console.log(historicalArtistImgs[i]);
               if (historicalArtistImgs[i] === "../assets/img/placeholder-img.svg") {
                 artistDiv.classList.add('opacity-50','pointer-events-none');
               }
@@ -263,11 +267,11 @@ const handleRadioInputs = event => {
   });
 };
 
-// window.onload = () => {
-//   // resultsTable.innerHTML = `<p class="text-slate-500 italic">Please search for results and select desired type.</p>` ;
-//   // searchBands.value = localStorage.getItem("searchValue");
-//   // resultsTable.innerHTML = JSON.parse(localStorage.getItem("recent-input"));
-// };
+window.onload = () => {
+  resultsTable.innerHTML = `<p class="text-slate-500 italic">Please search for results and select desired type.</p>` ;
+  // searchBands.value = localStorage.getItem("searchValue");
+  // resultsTable.innerHTML = JSON.parse(localStorage.getItem("recent-input"));
+};
 submitBtn.addEventListener("click", handleRadioInputs);
 //end of the radio selection
 
