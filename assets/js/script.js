@@ -34,7 +34,7 @@ const Query = selection => {
   fetch(tokenUrl, requestOptions)
     .then(response => response.json())
     .then(data => {
-      console.log(data);
+      // console.log(data);
       const accessToken = data.access_token;
       // console.log('Access Token:', accessToken);
 
@@ -108,7 +108,7 @@ const Query = selection => {
             artistTable.classList = "flex flex-wrap justify-between";
             for (const artistItem of artistItems) {
               // console.log(artistItem.images[1].url);
-              console.log(artistItem);
+              // console.log(artistItem);
               storeArtistName.push(artistItem.name);
               storeArtistHREF.push(artistItem.external_urls.spotify);
               if (artistItem.images.length !== 0) {
@@ -139,31 +139,37 @@ const Query = selection => {
             for (let i = 0; i < historicalArtistNames.length; i++) {
               // console.log(historicalArtistNames[i]);
               // console.log(historicalArtistHREFs[i]);
+              let artistNameDiv = document.createElement("div");
+              artistNameDiv.classList = "font-bold";
               let artistDiv = document.createElement("div");
               let artistSecondaryDiv = document.createElement("div");
               let artistIMG = document.createElement("img");
               let artistLink = document.createElement("a");
               let artistButton = document.createElement("button");
               artistIMG.classList = "w-[190px] h-[190px] m-5 rounded-md"
-              artistButton.classList = "w-[50%] border-2 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-md transition duration-200";
-              artistButton.textContent = `${historicalArtistNames[i]} YouTube`;
+              artistButton.classList = "cursor-auto result border-2 border-red-400 w-[50%] p-2 mb-2 text-center shadow-md rounded-md hover:cursor-pointer hover:bg-red-200 hover:text-white transition duration-200 font-bold";
+              artistButton.textContent = `YouTube`;
+              artistButton.title = `Find out more about the artist on YouTube`;
               artistButton.addEventListener('click', function() {
                 const youtubeSearchUrl = `https://www.youtube.com/results?search_query=${encodeURIComponent(historicalArtistNames[i])}`;
                 window.open(youtubeSearchUrl, '_blank');
               });
               artistLink.classList =
-                "cursor-auto result border-2 border-slate-400 w-[50%] p-2 mb-2 text-center shadow-md rounded-md hover:cursor-pointer hover:bg-slate-200 hover:text-white transition duration-200 font-bold";
+                "ml-2 cursor-auto result border-2 border-green-400 w-[50%] p-2 mb-2 text-center shadow-md rounded-md hover:cursor-pointer hover:bg-green-200 hover:text-white transition duration-200 font-bold";
+              artistLink.title = `Find out more about the artist on Spotify`;
               artistDiv.classList =
                 "flex flex-col justify-center items-center cursor-auto result border-2 border-blue-400 w-[50%] p-2 mb-2 text-center shadow-md rounded-md";
-              console.log(historicalArtistImgs[i]);
+              artistNameDiv.textContent = `${historicalArtistNames[i]}`
+              // console.log(historicalArtistImgs[i]);
               if (historicalArtistImgs[i] === "../assets/img/placeholder-img.svg") {
                 artistDiv.classList.add('opacity-50','pointer-events-none');
               }
-              artistSecondaryDiv.classList = "flex flex-row items-center justify-around";
-              artistLink.textContent = `${historicalArtistNames[i]} Spotify`;
+              artistSecondaryDiv.classList = "flex flex-row";
+              artistLink.textContent = `Spotify`;
               artistLink.href = historicalArtistHREFs[i];
               artistLink.target = "_blank";
               artistIMG.src = historicalArtistImgs[i];
+              artistDiv.appendChild(artistNameDiv);
               artistDiv.appendChild(artistIMG);
               artistSecondaryDiv.appendChild(artistButton);
               artistSecondaryDiv.appendChild(artistLink);
@@ -178,6 +184,7 @@ const Query = selection => {
           } else if (selection === "track") {
             resultsTable.innerHTML = "";
             const trackItems = Data.tracks.items;
+            const storeTrackArtist = [];
             const storeTrackName = [];
             const storeTrackHREFs = [];
             const storeTrackImg = [];
@@ -186,7 +193,7 @@ const Query = selection => {
             trackTable.classList = "flex flex-wrap justify-between";
             // trackTable.classList = "flex flex-wrap"
             for (const trackItem of trackItems) {
-              // console.log(trackItem.album.images[1].url);
+              storeTrackArtist.push(trackItem.album.artists[0].name);
               storeTrackName.push(trackItem.name);
               storeTrackHREFs.push(trackItem.external_urls.spotify);
               if (trackItem.album.images.length !== 0) {
@@ -195,6 +202,7 @@ const Query = selection => {
                 storeTrackImg.push("../assets/img/placeholder-img.svg")
               }
             }
+            localStorage.setItem("track-artists", JSON.stringify(storeTrackArtist));
             localStorage.setItem("track-names", JSON.stringify(storeTrackName));
             localStorage.setItem(
               "track-hrefs",
@@ -210,18 +218,23 @@ const Query = selection => {
             let historicalTrackImgs = JSON.parse(
               localStorage.getItem("track-imgs")
             );
+            let historicalTrackArtists = JSON.parse(localStorage.getItem("track-artists"))
             for (let i = 0; i < historicalTrackNames.length; i++) {
               // console.log(historicalTrackImgs[i]);
               // console.log(historicalTrackNames[i]);
               // console.log(historicalTrackHREFs[i]);
               let trackDiv = document.createElement("div");
+              let trackNameDiv = document.createElement("div");
+              trackNameDiv.classList = "font-bold";
               let trackSecondaryDiv = document.createElement("div");
               let trackIMG = document.createElement("img");
               let trackLink = document.createElement("a");
               let trackButton = document.createElement("button");
+              trackNameDiv.textContent = `${historicalTrackNames[i]} - ${historicalTrackArtists[i]}`
               trackIMG.classList = "w-[190px] h-[190px] m-5 rounded-md"
-              trackButton.classList = "w-[50%] border-2 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-md transition duration-200";
-              trackButton.textContent = `${historicalTrackNames[i]} YouTube`;
+              trackButton.classList = "cursor-auto result border-2 border-red-400 w-[50%] p-2 mb-2 ml-2 text-center shadow-md rounded-md hover:cursor-pointer hover:bg-red-200 hover:text-white transition duration-200 font-bold";
+              trackButton.textContent = `YouTube`;
+              trackButton.title = `Find out more about the song on YouTube`;
               trackButton.addEventListener('click', function() {
                 const youtubeSearchUrl = `https://www.youtube.com/results?search_query=${encodeURIComponent(historicalTrackNames[i])}`;
                 window.open(youtubeSearchUrl, '_blank');
@@ -231,11 +244,13 @@ const Query = selection => {
               if (historicalTrackImgs[i] === "../assets/img/placeholder-img.svg") {
                 artistDiv.classList.add('opacity-50','pointer-events-none');
               }
-              trackLink.classList = "cursor-auto result border-2 border-slate-400 w-[50%] p-2 mb-2 ml-2 text-center shadow-md rounded-md hover:cursor-pointer hover:bg-slate-200 hover:text-white transition duration-200 font-bold";
-              trackLink.textContent = `${historicalTrackNames[i]} Spotify`;
+              trackLink.classList = "cursor-auto result border-2 border-green-400 w-[50%] p-2 mb-2 ml-2 text-center shadow-md rounded-md hover:cursor-pointer hover:bg-green-200 hover:text-white transition duration-200 font-bold";
+              trackLink.textContent = `Spotify`;
+              trackLink.title = `Find out more about the song on Spotify`;
               trackLink.href = historicalTrackHREFs[i];
               trackLink.target = "_blank";
               trackIMG.src = historicalTrackImgs[i];
+              trackDiv.appendChild(trackNameDiv);
               trackDiv.appendChild(trackIMG);
               trackSecondaryDiv.appendChild(trackButton);
               trackSecondaryDiv.appendChild(trackLink);
